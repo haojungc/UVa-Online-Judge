@@ -21,16 +21,17 @@
 #define STRAIGHT_FLUSH  8
 
 typedef struct {
-    int value;      // increasing order: 2, 3, 4, 5, 6, 7, 8, 9, T, J, Q, K, A
+    int value;      // possible values: 0 - 12
     char suit;      // no impact on value
 } Card;
 
 int to_value(char);                 // returns the value of the card
-void sort(Card[]);                  // sort a hand into "decreasing order"
+void sort(Card[]);                  // sorts a hand in "ascending order"
 int get_winner(Card[], Card[]);     // compares two poker hands and returns the winner
 int get_hand_order(Card[]);         // returns the order of the matched poker hand
 int compare(Card[], Card[], int);   // compares two poker hands and return the winner
-                                    // the third parameter is used for deciding which hand comparison is to be called
+                                    // The third parameter is used for deciding which ranking rule of hand types is to be called.
+
 bool is_straight_flush(Card[]);
 bool is_four_of_a_kind(Card[]);
 bool is_full_house(Card[]);
@@ -75,12 +76,12 @@ int main() {
             white[i].suit = suit;
         }
 
-        sort(black);    // decreasing order
-        sort(white);    // decreasing order
+        sort(black);    // descending order
+        sort(white);    // descending order
 
         int winner = get_winner(black, white);
 
-        // Show the winner
+        // Shows the winner
         if (winner == NONE)
             printf("Tie.\n");
         else if (winner == BLACK) {
@@ -112,7 +113,9 @@ int to_value(char value) {
     }
 }
 
+// Selection sort
 void sort(Card c[]) {
+    // sorts c[] in descending order
     for (int i = 0; i < MAX_CARD - 1; i++) {
         for (int j = i + 1; j < MAX_CARD; j++) {
             if (c[j].value > c[i].value) {
@@ -168,19 +171,19 @@ bool is_straight_flush(Card c[]) {
         consec_values = 0;          // the number of consecutive values
     char suit = c[0].suit;
 
-    // check if all of the cards have the same suit
-    // and count the number of occurences of each value
+    // checks if all of the cards have the same suit
+    // and counts the number of occurences of each value
     valueCount[c[0].value]++;
     for (int i = 1; i < MAX_CARD; i++) {
         if (c[i].suit != suit) return false;
         valueCount[c[i].value]++;
     }
 
-    // count the number of consecutive values
+    // counts the number of consecutive values
     if (valueCount[0] != 0) consec_values++;
     for (int i = 1; i < MAX_LEN; i++) {
         if (valueCount[i] != 0) {
-            // check consecutiveness
+            // checks consecutiveness
             if (valueCount[i - 1] != 0) consec_values++;
             else consec_values = 1;
         }
@@ -194,7 +197,7 @@ bool is_straight_flush(Card c[]) {
 bool is_four_of_a_kind(Card c[]) {
     int valueCount[MAX_LEN] = {0};  // the number of occurences of each value
 
-    // count the number of occurences of each value
+    // counts the number of occurences of each value
     for (int i = 0; i < MAX_CARD; i++)
         valueCount[c[i].value]++;
 
@@ -206,10 +209,10 @@ bool is_four_of_a_kind(Card c[]) {
 
 bool is_full_house(Card c[]) {
     int valueCount[MAX_LEN] = {0};  // the number of occurences of each value
-    bool three_identical = false,
-         two_identical = false;
+    bool three_identical = false,   // three cards with the same value
+         two_identical = false;     // two cards with the same value
 
-    // count the number of occurences of each value
+    // counts the number of occurences of each value
     for (int i = 0; i < MAX_CARD; i++)
         valueCount[c[i].value]++;
     
@@ -226,7 +229,7 @@ bool is_flush(Card c[]) {
     int valueCount[MAX_LEN] = {0};  // the number of occurences of each value
     char suit = c[0].suit;
 
-    // check if all of the cards have the same suit
+    // checks if all of the cards have the same suit
     valueCount[c[0].value]++;
     for (int i = 1; i < MAX_CARD; i++)
         if (c[i].suit != suit) return false;
@@ -238,16 +241,16 @@ bool is_straight(Card c[]) {
     int valueCount[MAX_LEN] = {0},  // the number of occurences of each value
         consec_values = 0;          // the number of consecutive values
 
-    // count the number of occurences of each value
+    // counts the number of occurences of each value
     for (int i = 0; i < MAX_CARD; i++)
         valueCount[c[i].value]++;
 
-    // count the number of consecutive values
+    // counts the number of consecutive values
     if (valueCount[0] != 0) consec_values++;
     else consec_values++;
     for (int i = 1; i < MAX_LEN; i++) {
         if (valueCount[i] != 0) {
-            // check consecutiveness
+            // checks consecutiveness
             if (valueCount[i - 1] != 0) consec_values++;
             else consec_values = 1;
         }
@@ -261,7 +264,7 @@ bool is_straight(Card c[]) {
 bool is_three_of_a_kind(Card c[]) {
     int valueCount[MAX_LEN] = {0};  // the number of occurences of each value
 
-    // count the number of occurences of each value
+    // counts the number of occurences of each value
     for (int i = 0; i < MAX_CARD; i++)
         valueCount[c[i].value]++;
     
@@ -275,7 +278,7 @@ bool is_two_pairs(Card c[]) {
     int valueCount[MAX_LEN] = {0},  // the number of occurences of each value
         pair_count = 0;
 
-    // count the number of occurences of each value
+    // counts the number of occurences of each value
     for (int i = 0; i < MAX_CARD; i++)
         valueCount[c[i].value]++;
     
@@ -290,7 +293,7 @@ bool is_two_pairs(Card c[]) {
 bool is_pair(Card c[]) {
     int valueCount[MAX_LEN] = {0};  // the number of occurences of each value
 
-    // count the number of occurences of each value
+    // counts the number of occurences of each value
     for (int i = 0; i < MAX_CARD; i++)
         valueCount[c[i].value]++;
     
@@ -309,8 +312,8 @@ int cmp_four_of_a_kind(Card b[], Card w[]) {
         w_valueCount[MAX_LEN] = {0},
         b_max, w_max, winner;
 
-    // count the number of occurences of each value
-    // and find the value of the four cards
+    // counts the number of occurences of each value
+    // and finds the value of the four cards
     for (int i = 0; i < MAX_CARD; i++) {
         b_valueCount[b[i].value]++;
         w_valueCount[w[i].value]++;
@@ -347,8 +350,8 @@ int cmp_three_of_a_kind(Card b[], Card w[]) {
         w_valueCount[MAX_LEN] = {0},
         b_max, w_max, winner;
 
-    // count the number of occurences of each value
-    // and find the value of the three cards
+    // counts the number of occurences of each value
+    // and finds the value of the three cards
     for (int i = 0; i < MAX_CARD; i++) {
         b_valueCount[b[i].value]++;
         w_valueCount[w[i].value]++;
@@ -370,13 +373,13 @@ int cmp_pair(Card b[], Card w[]) {
     int b_valueCount[MAX_LEN] = {0},    // the number of occurences of each value
         w_valueCount[MAX_LEN] = {0};
 
-    // count the number of occurences of each value
+    // counts the number of occurences of each value
     for (int i = 0; i < MAX_CARD; i++) {
         b_valueCount[b[i].value]++;
         w_valueCount[w[i].value]++;
     }
 
-    // compare pairs
+    // compares pairs
     for (int i = MAX_LEN - 1; i >= 0; i--) {
         bool b_is_greater = b_valueCount[i] == 2 && w_valueCount[i] != 2,
              w_is_greater = w_valueCount[i] == 2 && b_valueCount[i] != 2;
@@ -385,7 +388,7 @@ int cmp_pair(Card b[], Card w[]) {
         if (w_is_greater) return WHITE;
     }
     
-    // compare the remaining card
+    // compares the remaining card
     for (int i = MAX_LEN - 1; i >= 0; i--) {
         bool b_is_greater = b_valueCount[i] == 1 && w_valueCount[i] != 1,
              w_is_greater = w_valueCount[i] == 1 && b_valueCount[i] != 1;
@@ -400,7 +403,7 @@ int cmp_pair(Card b[], Card w[]) {
 int cmp_high_card(Card b[], Card w[]) {
     int winner;
     
-    // compare the cards
+    // compares the cards
     for (int i = 0; i < MAX_CARD; i++) {
         bool b_is_greater = b[i].value > w[i].value,
              w_is_greater = w[i].value > b[i].value;
