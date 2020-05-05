@@ -1,5 +1,5 @@
 /* Poker Hands */
-/* PC/UVa IDs: 110202/10315, Popularity: C, Success rate: average Level: 2 */
+/* PC/UVa IDs: 110202/10315, Popularity: C, Success rate: average, Level: 2 */
 #include <stdio.h>
 #include <stdbool.h>
 
