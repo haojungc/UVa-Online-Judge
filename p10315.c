@@ -3,21 +3,22 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-#define MAX_CARD 5
-#define MAX_LEN 13   // leave c[0], c[1] empty
-#define NONE 0
-#define BLACK 1
-#define WHITE 2
-#define MAX_ORDER 8
-#define HIGH_CARD 0
-#define PAIR 1
-#define TWO_PAIRS 2
+#define MAX_CARD        5
+#define MAX_LEN         13  // leave c[0], c[1] empty
+
+#define NONE            0   // tie
+#define BLACK           1
+#define WHITE           2
+
+#define HIGH_CARD       0
+#define PAIR            1
+#define TWO_PAIRS       2
 #define THREE_OF_A_KIND 3
-#define STRAIGHT 4
-#define FLUSH 5
-#define FULL_HOUSE 6
-#define FOUR_OF_A_KIND 7
-#define STRAIGHT_FLUSH 8
+#define STRAIGHT        4
+#define FLUSH           5
+#define FULL_HOUSE      6
+#define FOUR_OF_A_KIND  7
+#define STRAIGHT_FLUSH  8
 
 typedef struct {
     int value;      // increasing order: 2, 3, 4, 5, 6, 7, 8, 9, T, J, Q, K, A
@@ -27,8 +28,7 @@ typedef struct {
 int to_value(char);                 // returns the value of the card
 void sort(Card[]);                  // sort a hand into "decreasing order"
 int get_winner(Card[], Card[]);     // compares two poker hands and returns the winner
-int get_hand_order(Card[], int);    // returns the order of the matched poker hand
-                                    // the second parameter is the lowerbound of the searching range
+int get_hand_order(Card[]);         // returns the order of the matched poker hand
 int compare(Card[], Card[], int);   // compares two poker hands and return the winner
                                     // the third parameter is used for deciding which hand comparison is to be called
 bool is_straight_flush(Card[]);
@@ -55,19 +55,19 @@ int main() {
     Card black[MAX_CARD], white[MAX_CARD];
     char value, suit, c;
 
-    while(scanf("%c%c%c", &value, &suit, &c) != EOF) {
+    while (scanf("%c%c%c", &value, &suit, &c) != EOF) {
         // Input the first card for player Black
         black[0].value = to_value(value);
         black[0].suit = suit;
 
         // Input the four remaining cards for player Black
-        for(int i = 1; i < MAX_CARD; i++) {
+        for (int i = 1; i < MAX_CARD; i++) {
             scanf("%c%c%c", &value, &suit, &c);
             black[i].value = to_value(value);
             black[i].suit = suit;
         }
         // Input five cards for player White
-        for(int i = 0; i < MAX_CARD; i++) {
+        for (int i = 0; i < MAX_CARD; i++) {
             char value, suit, c;
             scanf("%c%c%c", &value, &suit, &c);
 
@@ -81,30 +81,21 @@ int main() {
         int winner = get_winner(black, white);
 
         // Show the winner
-        if(winner == NONE)
+        if (winner == NONE)
             printf("Tie.\n");
-        else if(winner == BLACK) {
+        else if (winner == BLACK) {
             printf("Black wins.\n");
         }
-        else if(winner == WHITE) {
+        else if (winner == WHITE) {
             printf("White wins.\n");
         }
-
-        /*for(int i = 0; i < 5; i++) {
-            printf("%d%c ", black[i].value, black[i].suit);
-        }
-        printf("\n");
-        for(int i = 0; i < 5; i++) {
-            printf("%d%c ", white[i].value, white[i].suit);
-        }
-        printf("\n");*/
     }
 
     return 0;
 }
 
 int to_value(char value) {
-    switch(value) {
+    switch (value) {
         case '2': return 0;
         case '3': return 1;
         case '4': return 2;
@@ -135,8 +126,8 @@ void sort(Card c[]) {
 
 int get_winner(Card b[], Card w[]) {
     int winner;
-    int b_order = get_hand_order(b, 0);         // search from MAX_ORDER to 0
-    int w_order = get_hand_order(w, b_order);   // search from MAX_ORDER to b_order
+    int b_order = get_hand_order(b);
+    int w_order = get_hand_order(w);
 
     if (b_order == w_order)     winner = compare(b, w, b_order);
     else if (b_order > w_order) winner = BLACK;
@@ -145,7 +136,7 @@ int get_winner(Card b[], Card w[]) {
     return winner;
 }
 
-int get_hand_order(Card c[], int low) {
+int get_hand_order(Card c[]) {
     if (is_straight_flush(c))   return STRAIGHT_FLUSH;
     if (is_four_of_a_kind(c))   return FOUR_OF_A_KIND;
     if (is_full_house(c))       return FULL_HOUSE;
