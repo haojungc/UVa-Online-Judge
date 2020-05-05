@@ -4,7 +4,7 @@
 #include <stdbool.h>
 
 #define MAX_CARD        5
-#define MAX_LEN         13  // leave c[0], c[1] empty
+#define MAX_LEN         13
 
 #define NONE            0   // tie
 #define BLACK           1
