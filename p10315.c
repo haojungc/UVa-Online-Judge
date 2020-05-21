@@ -3,22 +3,21 @@
 #include <stdio.h>
 #include <stdbool.h>
 
-#define MAX_CARD        5
-#define MAX_LEN         13
+#define MAX_CARD    5
+#define MAX_LEN     13
 
-#define NONE            0   // tie
-#define BLACK           1
-#define WHITE           2
-
-#define HIGH_CARD       0
-#define PAIR            1
-#define TWO_PAIRS       2
-#define THREE_OF_A_KIND 3
-#define STRAIGHT        4
-#define FLUSH           5
-#define FULL_HOUSE      6
-#define FOUR_OF_A_KIND  7
-#define STRAIGHT_FLUSH  8
+typedef enum { NONE, BLACK, WHITE } Winner;
+typedef enum {
+    HIGH_CARD,
+    PAIR,
+    TWO_PAIRS,
+    THREE_OF_A_KIND,
+    STRAIGHT,
+    FLUSH,
+    FULL_HOUSE,
+    FOUR_OF_A_KIND,
+    STRAIGHT_FLUSH
+} Hand;
 
 typedef struct {
     int value;      // possible values: 0 - 12
