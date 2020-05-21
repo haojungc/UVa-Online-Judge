@@ -24,12 +24,12 @@ typedef struct {
     char suit;      // no impact on value
 } Card;
 
-int to_value(char);                 // returns the value of the card
-void sort(Card[]);                  // sorts a hand in "ascending order"
-int get_winner(Card[], Card[]);     // compares two poker hands and returns the winner
-int get_hand_order(Card[]);         // returns the order of the matched poker hand
-int compare(Card[], Card[], int);   // compares two poker hands and return the winner
-                                    // The third parameter is used for deciding which ranking rule of hand types is to be called.
+int to_value(char);                     // returns the value of the card
+void sort(Card[]);                      // sorts a hand in "ascending order"
+Winner get_winner(Card[], Card[]);      // compares two poker hands and returns the winner
+Hand get_hand_order(Card[]);            // returns the order of the matched poker hand
+Winner compare(Card[], Card[], Hand);   // compares two poker hands and return the winner
+                                        // The third parameter is used for deciding which ranking rule of hand types is to be called.
 
 bool is_straight_flush(Card[]);
 bool is_four_of_a_kind(Card[]);
@@ -41,15 +41,15 @@ bool is_two_pairs(Card[]);
 bool is_pair(Card[]);
 
 // compares two poker hands and returns the winner
-int cmp_straight_flush(Card[], Card[]);
-int cmp_four_of_a_kind(Card[], Card[]);
-int cmp_full_house(Card[], Card[]);
-int cmp_flush(Card[], Card[]);
-int cmp_straight(Card[], Card[]);
-int cmp_three_of_a_kind(Card[], Card[]);
-int cmp_two_pairs(Card[], Card[]);
-int cmp_pair(Card[], Card[]);
-int cmp_high_card(Card[], Card[]);
+Winner cmp_straight_flush(Card[], Card[]);
+Winner cmp_four_of_a_kind(Card[], Card[]);
+Winner cmp_full_house(Card[], Card[]);
+Winner cmp_flush(Card[], Card[]);
+Winner cmp_straight(Card[], Card[]);
+Winner cmp_three_of_a_kind(Card[], Card[]);
+Winner cmp_two_pairs(Card[], Card[]);
+Winner cmp_pair(Card[], Card[]);
+Winner cmp_high_card(Card[], Card[]);
 
 int main() {
     Card black[MAX_CARD], white[MAX_CARD];
@@ -78,7 +78,7 @@ int main() {
         sort(black);    // descending order
         sort(white);    // descending order
 
-        int winner = get_winner(black, white);
+        Winner winner = get_winner(black, white);
 
         // Shows the winner
         if (winner == NONE)
@@ -109,6 +109,7 @@ int to_value(char value) {
         case 'Q': return 10;
         case 'K': return 11;
         case 'A': return 12;
+        default:  return -1;
     }
 }
 
@@ -126,10 +127,10 @@ void sort(Card c[]) {
     }
 }
 
-int get_winner(Card b[], Card w[]) {
-    int winner;
-    int b_order = get_hand_order(b);
-    int w_order = get_hand_order(w);
+Winner get_winner(Card b[], Card w[]) {
+    Winner winner;
+    Hand b_order = get_hand_order(b);
+    Hand w_order = get_hand_order(w);
 
     if (b_order == w_order)     winner = compare(b, w, b_order);
     else if (b_order > w_order) winner = BLACK;
@@ -138,7 +139,7 @@ int get_winner(Card b[], Card w[]) {
     return winner;
 }
 
-int get_hand_order(Card c[]) {
+Hand get_hand_order(Card c[]) {
     if (is_straight_flush(c))   return STRAIGHT_FLUSH;
     if (is_four_of_a_kind(c))   return FOUR_OF_A_KIND;
     if (is_full_house(c))       return FULL_HOUSE;
@@ -151,7 +152,7 @@ int get_hand_order(Card c[]) {
     return HIGH_CARD;
 }
 
-int compare(Card b[], Card w[], int hand) {
+Winner compare(Card b[], Card w[], Hand hand) {
     switch (hand) {
         case HIGH_CARD:         return cmp_high_card(b, w);
         case PAIR:              return cmp_pair(b, w);
@@ -302,14 +303,15 @@ bool is_pair(Card c[]) {
     return false;
 }
 
-int cmp_straight_flush(Card b[], Card w[]) {
+Winner cmp_straight_flush(Card b[], Card w[]) {
     return cmp_straight(b, w);
 }
 
-int cmp_four_of_a_kind(Card b[], Card w[]) {
+Winner cmp_four_of_a_kind(Card b[], Card w[]) {
     int b_valueCount[MAX_LEN] = {0},    // the number of occurences of each value
         w_valueCount[MAX_LEN] = {0},
-        b_max, w_max, winner;
+        b_max, w_max;
+    Winner winner;
 
     // counts the number of occurences of each value
     // and finds the value of the four cards
@@ -326,16 +328,16 @@ int cmp_four_of_a_kind(Card b[], Card w[]) {
     return winner;
 }
 
-int cmp_full_house(Card b[], Card w[]) {
+Winner cmp_full_house(Card b[], Card w[]) {
     return cmp_three_of_a_kind(b, w);
 }
 
-int cmp_flush(Card b[], Card w[]) {
+Winner cmp_flush(Card b[], Card w[]) {
     return cmp_high_card(b, w);
 }
 
-int cmp_straight(Card b[], Card w[]) {
-    int winner;
+Winner cmp_straight(Card b[], Card w[]) {
+    Winner winner;
 
     if (b[0].value > w[0].value)        winner = BLACK;
     else if (w[0].value > b[0].value)   winner = WHITE;
@@ -344,10 +346,11 @@ int cmp_straight(Card b[], Card w[]) {
     return winner;
 }
 
-int cmp_three_of_a_kind(Card b[], Card w[]) {
+Winner cmp_three_of_a_kind(Card b[], Card w[]) {
     int b_valueCount[MAX_LEN] = {0},    // the number of occurences of each value
         w_valueCount[MAX_LEN] = {0},
-        b_max, w_max, winner;
+        b_max, w_max;
+    Winner winner;
 
     // counts the number of occurences of each value
     // and finds the value of the three cards
@@ -364,11 +367,11 @@ int cmp_three_of_a_kind(Card b[], Card w[]) {
     return winner;
 }
 
-int cmp_two_pairs(Card b[], Card w[]) {
+Winner cmp_two_pairs(Card b[], Card w[]) {
     return cmp_pair(b, w);
 }
 
-int cmp_pair(Card b[], Card w[]) {
+Winner cmp_pair(Card b[], Card w[]) {
     int b_valueCount[MAX_LEN] = {0},    // the number of occurences of each value
         w_valueCount[MAX_LEN] = {0};
 
@@ -399,9 +402,7 @@ int cmp_pair(Card b[], Card w[]) {
     return NONE;    // no winner
 }
 
-int cmp_high_card(Card b[], Card w[]) {
-    int winner;
-    
+Winner cmp_high_card(Card b[], Card w[]) {
     // compares the cards
     for (int i = 0; i < MAX_CARD; i++) {
         bool b_is_greater = b[i].value > w[i].value,
