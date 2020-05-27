@@ -20,7 +20,7 @@ typedef enum {
 } Hand;
 
 typedef struct {
-    int value;      // possible values: 0 - 12
+    int value;      // possible values: 0 ~ 12
     char suit;      // no impact on value
 } Card;
 

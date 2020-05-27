@@ -1,1 +1,1 @@
-UVa Online Judge
+Solutions to UVa Online Judge problems
