@@ -1,3 +1,5 @@
+/* The 3n + 1 Problem */
+/* PC/UVa IDs: 110101/100, Popularity: A, Success rate: low, Level: 1 */
 #include <cstdio>
 
 int get_cycleLength(int n){
