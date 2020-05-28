@@ -29,12 +29,13 @@ const int MAX_LEN = 16;
 const int MAX_SIZE = 25150;
 Dictionary dict[MAX_LEN][MAX_SIZE];
 int word_count[MAX_LEN];    // default: 0
+bool first_case = true;
+string no_solution_msg = "No solution.";
 
 int main() {
     // Inputs the dictionary
     string tmp;
-    while (true) {
-        getline(cin, tmp);
+    while (getline(cin, tmp)) {
         if (tmp == "") break;
 
         int len_index = tmp.length() - 1;
@@ -62,9 +63,12 @@ void initialize() {
 }
 
 void print_sequence(const string &start_str, const string &end_str) {
+    if (first_case) first_case = false;
+    else cout << endl;
+
     // Different length: no solution
     if (start_str.length() != end_str.length()) {
-        cout << "No solution.\n\n";
+        cout << no_solution_msg << endl;
         return;
     }
     
@@ -72,7 +76,7 @@ void print_sequence(const string &start_str, const string &end_str) {
     int last_index = create_sequence_bfs(start_str, end_str);
     
     if (last_index == -1) {
-        cout << "No solution.\n\n";
+        cout << no_solution_msg << endl;
         return;
     }
 
@@ -89,7 +93,7 @@ void print_sequence(const string &start_str, const string &end_str) {
         cout << dict[len_index][sequence.top()].word << endl;
         sequence.pop();
     }
-    cout << endl;
+
 
     return;
 }
