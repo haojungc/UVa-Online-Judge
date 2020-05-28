@@ -13,18 +13,21 @@ using std::string;
 using std::queue;
 using std::stack;
 
-void initialize();
-void print_sequence(const string&, const string&);      // (start string, end string)
-int create_sequence_bfs(const string&, const string&);  // (start string, end string)
-int index_of(const string&, int);                       // (string to be searched, length index)
-bool is_doublet(const string&, const string&);
-
+/* Type Definitions */
 typedef struct {
     string word;
     bool visited;
     int prev;
 } Dictionary;
 
+/* Function Protoypes */
+void initialize();
+void print_sequence(const string&, const string&);      // (start string, end string)
+int create_sequence_bfs(const string&, const string&);  // (start string, end string)
+int index_of(const string&, int);                       // (string to be searched, length index)
+bool is_doublet(const string&, const string&);
+
+/* Global Variables */
 const int MAX_LEN = 16;
 const int MAX_SIZE = 25150;
 Dictionary dict[MAX_LEN][MAX_SIZE];
