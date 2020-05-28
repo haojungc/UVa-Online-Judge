@@ -35,9 +35,7 @@ string no_solution_msg = "No solution.";
 int main() {
     // Inputs the dictionary
     string tmp;
-    while (getline(cin, tmp)) {
-        if (tmp == "") break;
-
+    while (getline(cin, tmp), tmp != "") {
         int len_index = tmp.length() - 1;
         int count = word_count[len_index]++;
 
