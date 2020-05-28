@@ -72,7 +72,8 @@ void print_sequence(const string &start_str, const string &end_str) {
         return;
     }
     
-    // Uses BFS and gets the index of end_str (-1 if no solutions)
+    // Uses BFS and gets the index of end_str
+    // Returns -1 if there are no solutions
     int last_index = create_sequence_bfs(start_str, end_str);
     
     if (last_index == -1) {
@@ -80,7 +81,7 @@ void print_sequence(const string &start_str, const string &end_str) {
         return;
     }
 
-    // Creates a sequence and prints it out
+    // Creates a sequence
     stack<int> sequence;
     int len_index = start_str.length() - 1;
     int start_str_index = index_of(start_str, len_index);
@@ -89,11 +90,11 @@ void print_sequence(const string &start_str, const string &end_str) {
         sequence.push(i);
     sequence.push(start_str_index);
 
+    // Prints the sequence
     while (!sequence.empty()) {
         cout << dict[len_index][sequence.top()].word << endl;
         sequence.pop();
     }
-
 
     return;
 }
@@ -104,6 +105,7 @@ int create_sequence_bfs(const string &start_str, const string &end_str) {
     int start_str_index = index_of(start_str, len_index),
         end_str_index = index_of(end_str, len_index);
 
+    // BFS
     index_queue.push(start_str_index);
     dict[len_index][start_str_index].visited = true;
     while (!index_queue.empty()) {
@@ -111,10 +113,12 @@ int create_sequence_bfs(const string &start_str, const string &end_str) {
         string front_str = dict[len_index][front_index].word;
 
         for (int i = 0; i < word_count[len_index]; ++i) {
+            // Pushes the matched strings into index_queue
             if (!dict[len_index][i].visited && is_doublet(dict[len_index][i].word, front_str)) {
                 dict[len_index][i].visited = true;
                 dict[len_index][i].prev = front_index;
 
+                // End string found
                 if (i == end_str_index) return end_str_index;
 
                 index_queue.push(i);
