@@ -9,12 +9,13 @@ static int get_sum_of_distances(int[], int, int);   // get_sum_of_distances(sort
                                                     // length of the array, street number of Vito's house);
 
 int main() {
-    int total_cases, 
-        total_relatives, 
-        street_number[510];
+    int total_cases;
     
     scanf("%d", &total_cases);
     while (total_cases--) {
+        int total_relatives,
+            street_number[510];
+
         scanf("%d", &total_relatives);
         for (int i = 0; i < total_relatives; ++i)
             scanf("%d", &street_number[i]);
